@@ -1,0 +1,15 @@
+/venv
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+__pypackages__/
+
+# Environments
+
+# db
+
+/migrations
+
+
