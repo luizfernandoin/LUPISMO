@@ -1,27 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUPISMO</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-    <link rel="shortcut icon" href="{{url_for('static', filename='src/favicon.ico')}}" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-</head>
-<body>
-    <section class="container">
-        <div class="thought-input">
-            <form class="form-thought" action="/add_thought" method="POST">
-                <label for="thought">Pensamento:</label>
-                <textarea id="thought" name="text" rows="4" cols="50" required></textarea><br>
-                <input type="submit" value="Adicionar Pensamento">
-            </form>
-        </div>
+{% extends 'base.html' %}
 
-        <div class="thought-main"></div>
-    </section>
+{% block content %}
+<section class="container">
+    <div class="thought-input">
+        <form class="form-thought" action="/add_thought" method="POST">
+            <label for="thought">Pensamento:</label>
+            <textarea id="thought" name="text" rows="4" cols="50" required></textarea><br>
+            <input type="submit" value="Adicionar Pensamento">
+        </form>
+    </div>
+
+    <div class="thought-main">
+        <div class="thought-container">
+
+            <div class="thought-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Logo do Site">
+                </div>
+                <h5>Lupismo</h5>
+            </div>
+
+            <div class="thought-content">
+                <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint laboriosam similique minima quia vitae repellat nesciunt ipsam tempore, voluptate aut hic quasi suscipit tenetur reiciendis nulla aperiam iure error cupiditate.</span>
+            </div>
+
+            <div class="thought-footer">
+                <div class="author-info">
+                    <div class="logo-container">
+                        <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Foto do Autor">
+                    </div>
+                    <span>Luiz Fernando</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="like-button"><i class="bi bi-heart"></i></button>
+                    <button class="share-button"><i class="bi bi-share"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
     <script src="{{url_for('static', filename='js/script.js')}}"></script>
 </body>
 </html>
+
+{% endblock content %}

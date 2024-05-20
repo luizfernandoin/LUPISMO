@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} LUPME - Sign In {% endblock title %}
+
+{% block content %}
+
+<form action="/signin" method="post">
+    <input type="email" name="email" id="email" placeholder="email" required>
+    <input type="password" name="password" id="password" placeholder="password" required>
+    <button type="submit">Entrar</button>
+</form>
+
+
+{% endblock content %}
