@@ -8,12 +8,15 @@ messages = []
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    thoughts = Thought.query.all()
+    thoughts_data = [thought.to_dict() for thought in thoughts]
+    return render_template("index.html", thoughts=thoughts_data)
+
 
 @app.route("/signin", methods=['GET', 'POST'])
 def signin():
     if request.method == 'GET':
-        return render_template("signin.html")
+        return render_template("signIn.html")
     
     if request.method == 'POST':
         email = request.form.get('email')
@@ -33,7 +36,7 @@ def signin():
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':
-        return render_template("signup.html")
+        return render_template("signUp.html")
 
     if request.method == 'POST':
         username = request.form.get('username')
@@ -69,57 +72,59 @@ def signup():
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
-    return jsonify([user.__dict__ for user in users]), 200
+    return jsonify([user.to_dict() for user in users]), 200
 
+@app.route('/thought', methods=['GET'])
+def get_thought():
+    thoughts = Thought.query.all()
+    return jsonify([thought.to_dict() for thought in thoughts]), 200
 
+@app.route('/users/<int:user_id>/thoughts', methods=['GET'])
+def get_user_thoughts(user_id):
+    user = User.query.get(user_id)
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+    
+    thoughts = Thought.query.filter_by(author_id=user_id).all()
+    return jsonify([thought.to_dict() for thought in thoughts]), 200
 
-"""
-@app.route("/autenticar", methods=['POST'])
-def autenticar():
+@socketio.on('addThought')
+def add_thought(data):
+    text = data['thought']
 
+    if not text:
+        flash('Texto do pensamento não pode ser vazio.', 'error')
+        return redirect(url_for('home'))  # Ou qualquer rota que faça sentido
 
-@app.route("/create_user", methods=['POST'])
-def create_user():
-   """ 
+    # Obtém o ID do usuário autenticado
+    user_id = session.get('user_id')
 
-"""
-@app.route('/criar', methods=['POST',])
-def criar():
-    title = request.form['nome']
-    overview = request.form['overview']
-    avaliacao = request.form['avaliacao']
-    tot_avaliacao = request.form['tot_avaliacao']
+    # Verifica se o usuário está autenticado
+    if not user_id:
+        flash('Usuário não autenticado.', 'error')
+        return redirect(url_for('home'))  # Ou qualquer rota que faça sentido
 
-    movie = Movies.query.filter_by(title=title).first()
+    # Cria um novo pensamento
+    new_thought = Thought(
+        text=text,
+        author_id=user_id
+    )
 
-    if movie:
-        flash('Filme já existente!')
-        return redirect(url_for('index'))
-
-    novo_movie = Movies(id=None, title=title,overview=overview,poster='False',vote_average=avaliacao,vote_count=tot_avaliacao)
-
-    db.session.add(novo_movie)
+    # Adiciona o pensamento ao banco de dados
+    db.session.add(new_thought)
     db.session.commit()
 
-    capa = request.files['capa']
-    upload_path = app.config['UPLOAD_PATH']
-    timestamp = time.time()
-    capa.save(f'{upload_path}/capa{novo_movie.id}-{timestamp}.jpg')
+    flash('Pensamento adicionado com sucesso!', 'success')
+    
+    thought_data = {
+        'id': new_thought.id,
+        'thought': new_thought.text,
+        'author': new_thought.author.username,  # Acessa o nome do autor diretamente
+        'likes': 0,  # Inicialmente, o número de likes é 0
+        'shares': 0  # Inicialmente, o número de shares é 0
+    }
 
-
-    flash('Filme criado com sucesso!')
-    return redirect(url_for('index'))
-
-
-
-#Função que recebe a mensagem enviada pelo usuario.
-@socketio.on('sendMessage')
-def send_message_handler(msg):
-    messages.append(msg) #adiciona a mensagem ao banco de dados (um array).
-    emit('getMessage', msg, broadcast=True) #emite para o Frontend(usuario) através do evento getMessage, eviando como argumento a mensagem em formato broadcast(para todos);
-
-
-#Função que envia o array messages para o front através do evento message.
-@socketio.on('message')
-def handle_message(msg):
-    send(messages)"""
+    
+    print(thought_data)
+    # Emite a mensagem para todos os clientes conectados
+    emit('getMessage', thought_data, broadcast=True)

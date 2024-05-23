@@ -14,64 +14,68 @@ window.onload = function() {
     //Função que renderizará na tela a mensagem enviada pelo usuario.
     function addToChat(msg) {
         const pensamento = document.querySelector(".thought-main");
+        if (!pensamento) {
+            console.error("Element with class 'thought-main' not found.");
+            return;
+        }
+    
         const thoughtContainer = document.createElement('div');
         thoughtContainer.className = 'thought-container';
         thoughtContainer.setAttribute("thought-id", `${msg.id}`);
-
+    
         thoughtContainer.innerHTML = `
-            <div class="thought-header">
-                <div class="logo-container">
-                    <img src="../static/src/logo.png" alt="Logo do Site">
-                </div>
-                <h5>Lupismo</h5>
-            </div>
-
-            <div class="thought-content">
-                <span>${msg.thought}</span>
-            </div>
-
-            <div class="thought-footer">
-                <div class="author-info">
+            <div class="card-thought">
+                <div class="thought-header">
                     <div class="logo-container">
-                        <img src="../static/src/logo.png" alt="Foto do Autor">
+                        <img src="../static/src/logo.png" alt="Logo do Site">
                     </div>
-                    <span>Luiz Fernando</span>
+                    <h5>Lupismo</h5>
                 </div>
-                <div class="action-buttons">
-                    <button class="like-button">
-                        <i class="bi bi-heart"></i>
-                        <span>${msg.likes}</span>
-                    </button>
-                    <button class="share-button">
-                        <i class="bi bi-share"></i>
-                        <span>${msg.shares}</span>
-                    </button>
+
+                <div class="thought-content">
+                    <span>${msg.thought}</span>
+                </div>
+
+                <div class="thought-footer">
+                    <div class="author-info">
+                        <div class="logo-container">
+                            <img src="../static/src/logo.png" alt="Foto do Autor">
+                        </div>
+                        <span>${msg.author}</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="like-button">
+                            <i class="bi bi-heart"></i>
+                            <span>${msg.likes}</span>
+                        </button>
+                        <button class="share-button">
+                            <i class="bi bi-share"></i>
+                            <span>${msg.shares}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
-        pensamento.insertBefore(thoughtContainer, pensamento.firstChild);
-        
-        thoughtContainer.addEventListener('click', function (event) {
-            // Evita que o evento de clique se propague para os elementos pai
+    
+        if (pensamento.firstChild) {
+            pensamento.insertBefore(thoughtContainer, pensamento.firstChild);
+        } else {
+            pensamento.appendChild(thoughtContainer);
+        }
+    
+        // Adiciona ouvintes de eventos para os botões de curtida e compartilhamento
+        thoughtContainer.querySelector('.like-button').addEventListener('click', function(event) {
             event.stopPropagation();
-        
-            // Encontra o botão de curtida dentro do pensamento clicado
-            const likeButton = this.querySelector('.like-button');
-            const shareButton = this.querySelector('.share-button');
-            
-            // Adiciona ouvintes de eventos para os botões de curtida e compartilhamento
-            likeButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                toggleIcon(this, 'bi-heart', 'bi-heart-fill');
-                socket.emit('likeThought', {'id': msg.id})
-            });
-        
-            shareButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                toggleIcon(this, 'bi-share', 'bi-share-fill');
-            });
+            toggleIcon(this, 'bi-heart', 'bi-heart-fill');
+            socket.emit('likeThought', {'id': msg.id});
+        });
+    
+        thoughtContainer.querySelector('.share-button').addEventListener('click', function(event) {
+            event.stopPropagation();
+            toggleIcon(this, 'bi-share', 'bi-share-fill');
         });
     }
+    
 
     function addLikes(likes) {
         console.log(likes.likes)
@@ -89,12 +93,14 @@ window.onload = function() {
     //Esta selecionando o primeiro form e manipulando o evento de submit através de uma callback(passando uma função como argumento).
     document.querySelector("form").addEventListener("submit", function(event) {
         event.preventDefault(); //Impede que o evento siga seu fluxo normal, refresh.
-        
+        const editableDiv = document.getElementById('thought');
+        const thoughtText = editableDiv.innerText.trim();
+
         //Manda uma mensagem para o Backend, no qual sera recebida pela função sendThought, contendo um objeto com as chaves nome e message.
-        socket.emit('sendThought', {thought: event.target[0].value})
+        socket.emit('addThought', {thought: thoughtText})
 
         //Apos o envio os campos devem ser setados para vázio.
-        event.target[0].value = "";
+        editableDiv.innerText = "";
     })
 
     //Cria um evento da instancia socket (getMessage), responsavel por receber a mensagem do backend. 

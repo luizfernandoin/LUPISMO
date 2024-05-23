@@ -28,6 +28,15 @@ class User(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
 
 class Thought(db.Model):
     __tablename__ = "thoughts"
@@ -60,6 +69,17 @@ class Thought(db.Model):
     def decrement_shares(self):
         if self.shares_count > 0:
             self.shares_count -= 1
+            
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat(),
+            'author': self.author,
+            'likes': self.likes_count,
+            'shares': self.shares_count
+        }
 
 class Like(db.Model):
     __tablename__ = "likes"
