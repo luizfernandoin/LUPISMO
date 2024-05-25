@@ -29,7 +29,10 @@ window.onload = function() {
                     <div class="logo-container">
                         <img src="../static/src/logo.png" alt="Logo do Site">
                     </div>
-                    <h5>Lupismo</h5>
+                    <div>
+                        <h5>Lupismo</h5>
+                        <span>${msg.time}</span>
+                    </div>
                 </div>
 
                 <div class="thought-content">
@@ -62,32 +65,6 @@ window.onload = function() {
         } else {
             pensamento.appendChild(thoughtContainer);
         }
-    
-        // Adiciona ouvintes de eventos para os botões de curtida e compartilhamento
-        thoughtContainer.querySelector('.like-button').addEventListener('click', function(event) {
-            event.stopPropagation();
-            toggleIcon(this, 'bi-heart', 'bi-heart-fill');
-            socket.emit('likeThought', {'id': msg.id});
-        });
-    
-        thoughtContainer.querySelector('.share-button').addEventListener('click', function(event) {
-            event.stopPropagation();
-            toggleIcon(this, 'bi-share', 'bi-share-fill');
-        });
-    }
-    
-
-    function addLikes(likes) {
-        console.log(likes.likes)
-        const thoughtContainer = document.querySelector(`.thought-container[thought-id="${likes.id}"]`);
-
-        if (thoughtContainer) {
-            // Encontre os elementos span dentro do thought-container
-            const likeSpan = thoughtContainer.querySelector('.like-button span');
-
-            // Defina os valores dos spans
-            likeSpan.textContent = likes.likes; // Defina o valor desejado para curtidas
-        }
     }
 
     //Esta selecionando o primeiro form e manipulando o evento de submit através de uma callback(passando uma função como argumento).
@@ -108,17 +85,62 @@ window.onload = function() {
         addToChat(msg) //Aciona a função addToChat enviando a mensagem como parametro.
     })
 
-    socket.on('getLike', (likes) => {
-        addLikes(likes) //Aciona a função addToChat enviando a mensagem como parametro.
-    })
-
-
     //recebe do evento message todas as mensagens contidas no array ([{nome: , message: }])
     socket.on('message', (msgs) => {
         for(msg of msgs) {
             addToChat(msg) //chama a função e passa cada mensagem.
         }
     })
+
+    socket.on('updateLikes', function(data_like) {
+        console.log(data_like.likes)
+        const thoughtContainer = document.querySelector(`.thought-container[thought-id="${data_like.id}"]`);
+    
+        if (thoughtContainer) {
+            const button = thoughtContainer.querySelector('.like-button');
+            
+            if (data_like.increment) {
+                toggleIcon(button, 'bi-heart', 'bi-heart-fill');
+            } else {
+                toggleIcon(button, 'bi-heart-fill', 'bi-heart');
+            }
+    
+            const likeSpan = thoughtContainer.querySelector('.like-button span');
+            likeSpan.textContent = data_like.likes;
+        }
+    });
+
+    document.querySelector(".thought-main").addEventListener("click", function(event) {
+        const thoughtContainer = event.target.closest('.thought-container');
+        if (!thoughtContainer) return;
+
+        const thoughtId = thoughtContainer.getAttribute('thought-id');
+
+        if (event.target.closest('.like-button')) {
+            event.stopPropagation();
+            socket.emit('likeThought', { id: thoughtId });
+        }
+
+        if (event.target.closest('.share-button')) {
+            event.stopPropagation();
+            const button = event.target.closest('.share-button');
+            toggleIcon(button, 'bi-share', 'bi-share-fill');
+        }
+    });
+
+    socket.on('updateTimePosted', (data) => {
+        data.forEach((timeData) => {
+            console.log(timeData)
+            const postTimeElement = document.querySelector(`.thought-container[thought-id="${timeData.id}"] .post-time`);
+            if (postTimeElement) {
+                postTimeElement.textContent = timeData.created_at;
+            }
+        });
+    })
+    
+    setInterval(() => {
+        socket.emit('getTimePosted')
+    }, 60000);
 }
 
 function toggleIcon(button, firstClass, lastClass) {

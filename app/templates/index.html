@@ -29,13 +29,16 @@
     
     <div class="thought-main">
         {% for thought in thoughts %}
-        <div class="thought-container">
+        <div class="thought-container" thought-id="{{ thought.id }}">
             <div class="card-thought">
                 <div class="thought-header">
                     <div class="logo-container">
                         <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Logo do Site">
                     </div>
-                    <h5>Lupismo</h5>
+                    <div>
+                        <h5>Lupismo</h5>
+                        <span class="post-time">{{ thought.time_since_posted() }}</span>
+                    </div>
                 </div>
         
                 <div class="thought-content">
@@ -51,12 +54,16 @@
                     </div>
                     <div class="action-buttons">
                         <button class="like-button">
-                            <i class="bi bi-heart"></i>
-                            <span>{{ thought.likes }}</span>
+                            {% if thought.user_liked(user_id) %}
+                                <i class="bi bi-heart-fill"></i>
+                            {% else %}
+                                <i class="bi bi-heart"></i>
+                            {% endif %}
+                            <span>{{ thought.likes_count }}</span>
                         </button>
                         <button class="share-button">
                             <i class="bi bi-share"></i>
-                            <span>{{ thought.shares }}</span>
+                            <span>{{ thought.shares_count }}</span>
                         </button>
                     </div>
                 </div>    

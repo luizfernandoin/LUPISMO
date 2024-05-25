@@ -15,3 +15,8 @@ SQLALCHEMY_DATABASE_URI = \
     )
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+# pegando o nome do caminho absoluto do diretório e concatenando com o diretório uplouds
+UPLOAD_PATH = os.path.dirname(os.path.abspath(__file__)) + '/uploads'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}

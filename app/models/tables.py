@@ -43,32 +43,36 @@ class Thought(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String(1000), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), index=True)
-    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     author = db.relationship('User', backref='thoughts')
     likes_count = db.Column(db.Integer, default=0)
     shares_count = db.Column(db.Integer, default=0)
 
     def __repr__(self):
-        return f'<Thought(id={self.id}, text={self.text[:20]}..., author_id={self.author_id})>'
+        return f'<Thought(id={self.id}, text={self.text[:20]}..., author_id={self.author_id}, likes_count={self.likes_count}, shares_count={self.shares_count})>'
 
     def __str__(self):
         return f'Thought: {self.text}'
 
     def increment_likes(self):
         self.likes_count += 1
+        db.session.commit()
 
     def decrement_likes(self):
         if self.likes_count > 0:
             self.likes_count -= 1
+        db.session.commit()
 
     def increment_shares(self):
         self.shares_count += 1
+        db.session.commit()
 
     def decrement_shares(self):
         if self.shares_count > 0:
             self.shares_count -= 1
+        db.session.commit()
             
     def to_dict(self):
         return {
@@ -80,7 +84,28 @@ class Thought(db.Model):
             'likes': self.likes_count,
             'shares': self.shares_count
         }
+    
+    def user_liked(self, user_id):
+        return Like.query.filter_by(user_id=user_id, thought_id=self.id).first() is not None
+    
+    def time_since_posted(self):
+        now = datetime.now().replace(tzinfo=None)
+        diff = now - self.created_at
+        
+        days = diff.days
+        seconds = diff.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
 
+        if days > 0:
+            return f"{days} day(s) ago" if days > 1 else "a day ago"
+        elif hours > 0:
+            return f"{hours} hour(s) ago" if hours > 1 else "an hour ago"
+        elif minutes > 0:
+            return f"{minutes} minute(s) ago" if minutes > 1 else "a minute ago"
+        else:
+            return "just now"
+        
 class Like(db.Model):
     __tablename__ = "likes"
     

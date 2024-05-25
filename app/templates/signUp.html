@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} LUPME - Sign In {% endblock title %}
+{% block title %} LUPME - Sign Up {% endblock title %}
 
 {% block style %}
 {{ super() }}
@@ -11,9 +11,13 @@
 
 <div class="content-login">
     <div class="card-login">
-        <img src="{{url_for('static', filename='src/logo.png')}}" alt="">
-        
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" enctype="multipart/form-data">
+            <div id="content-profile">
+                <div id="uploadProfile" >
+                    <input type="file" id="capa" name="capa" accept=".jpg,.jpeg,.png" class="form-control">
+                    <img id="preview" src="{{ url_for('static', filename='src/profile.png') }}" alt="Preview"/>
+                </div>
+            </div>
             <div class="textfield">
                 <label for="username">Username</label>
                 <input type="text" name="username" placeholder="username">
@@ -32,5 +36,10 @@
         <p class="signin">Já tem conta? <a href="{{ url_for('signin') }}">Sign in</a> </p>
     </div>
 </div>
+
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/sign.js')}}"></script>
+{% endblock scripts %}
 
 {% endblock content %}

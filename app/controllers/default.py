@@ -8,9 +8,10 @@ messages = []
 
 @app.route("/")
 def home():
-    thoughts = Thought.query.all()
-    thoughts_data = [thought.to_dict() for thought in thoughts]
-    return render_template("index.html", thoughts=thoughts_data)
+    thoughts = Thought.query.order_by(Thought.created_at.desc()).all()
+    user_id = session.get('user_id')
+
+    return render_template("index.html", thoughts=thoughts, user_id=user_id)
 
 
 @app.route("/signin", methods=['GET', 'POST'])
@@ -119,12 +120,56 @@ def add_thought(data):
     thought_data = {
         'id': new_thought.id,
         'thought': new_thought.text,
-        'author': new_thought.author.username,  # Acessa o nome do autor diretamente
-        'likes': 0,  # Inicialmente, o número de likes é 0
-        'shares': 0  # Inicialmente, o número de shares é 0
+        'author': new_thought.author.username,
+        'likes': 0,
+        'shares': 0,
+        'time': new_thought.time_since_posted()
     }
 
     
     print(thought_data)
     # Emite a mensagem para todos os clientes conectados
     emit('getMessage', thought_data, broadcast=True)
+    
+@socketio.on('likeThought')
+def like_thought(data):
+    thought_id = data['id']
+    user_id = session.get('user_id')
+    existing_like = Like.query.filter_by(user_id=user_id, thought_id=thought_id).first()
+    
+    if user_id:
+        if existing_like:
+            db.session.delete(existing_like)
+            db.session.commit()
+        
+            thought = Thought.query.get(thought_id)
+            thought.decrement_likes()
+
+            print(thought)
+            
+            socketio.emit('updateLikes', {'increment': False, 'id': thought_id, 'likes': thought.likes_count})
+        else:
+            new_like = Like(user_id=user_id, thought_id=thought_id)
+            db.session.add(new_like)
+            db.session.commit()
+            
+            thought = Thought.query.get(thought_id)
+            thought.increment_likes()
+            
+            socketio.emit('updateLikes', {'increment': True, 'id': thought_id, 'likes': thought.likes_count})
+
+@socketio.on('getTimePosted')
+def get_time_posted():
+    thoughts = Thought.query.all()
+    
+    thought_data = []
+    
+    for thought in thoughts:
+        thought_data.append({
+            'id': thought.id,
+            'created_at': thought.time_since_posted()
+        })
+
+    socketio.emit('updateTimePosted', thought_data)
+    
+
