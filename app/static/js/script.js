@@ -13,6 +13,7 @@ window.onload = function() {
     
     //Função que renderizará na tela a mensagem enviada pelo usuario.
     function addToChat(msg) {
+        console.log(msg.profile)
         const pensamento = document.querySelector(".thought-main");
         if (!pensamento) {
             console.error("Element with class 'thought-main' not found.");
@@ -42,7 +43,7 @@ window.onload = function() {
                 <div class="thought-footer">
                     <div class="author-info">
                         <div class="logo-container">
-                            <img src="../static/src/logo.png" alt="Foto do Autor">
+                            <img src="${msg.profile}" alt="Foto do Autor">
                         </div>
                         <span>${msg.author}</span>
                     </div>

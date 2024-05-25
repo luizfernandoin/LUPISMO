@@ -148,23 +148,36 @@
 }
 
 .thought-content {
-    font-size: 1.3em;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.thought-content span {
+    font-size: 1em;
     line-height: 1.55em;
-    font-weight: 700;
-    font-family: "Roboto Slab", "Times New Roman", serif;
-    flex-grow: 1;
+    font-weight: 400;
 }
 
 .thought-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     height: 5vh;
 }
 
-.author-info {
+.author-profile {
     display: flex;
     align-items: center;
+}
+
+.author-info p {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.author-info span {
+    font-size: .9rem;
+    color: rgb(113, 118, 123);
 }
 
 .action-buttons {

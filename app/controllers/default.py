@@ -1,8 +1,10 @@
 from app import app, socketio, db
 from ..models.tables import User, Thought, Like, Share
 from flask_socketio import emit, send
-from flask import render_template, url_for, request, redirect, flash, session, jsonify
+from flask import render_template, url_for, request, redirect, flash, session, jsonify, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
+import time
+import os
 
 messages = [] 
 
@@ -66,6 +68,11 @@ def signup():
         # Adiciona o usuário ao banco de dados
         db.session.add(new_user)
         db.session.commit()
+        
+        profile = request.files['capa']
+        upload_path = app.config['UPLOAD_PATH']
+        timestamp = time.time()
+        profile.save(f'{upload_path}/profile{new_user.id}-{timestamp}.jpg')
 
         flash('User registered successfully. You can now login.', 'success')
         return redirect(url_for('home'))
@@ -117,13 +124,20 @@ def add_thought(data):
 
     flash('Pensamento adicionado com sucesso!', 'success')
     
+    profile_image = recupera_imagem(new_thought.author_id)
+    if profile_image:
+        profile_url = url_for('imagem', nome_arquivo=profile_image)
+    else:
+        profile_url = url_for('static', filename='src/profile.png')
+    
     thought_data = {
         'id': new_thought.id,
         'thought': new_thought.text,
         'author': new_thought.author.username,
         'likes': 0,
         'shares': 0,
-        'time': new_thought.time_since_posted()
+        'time': new_thought.time_since_posted(),
+        'profile': profile_url
     }
 
     
@@ -171,5 +185,22 @@ def get_time_posted():
         })
 
     socketio.emit('updateTimePosted', thought_data)
-    
 
+@app.route('/uploads/<nome_arquivo>')
+def imagem(nome_arquivo):
+    return send_from_directory(app.config['UPLOAD_PATH'], nome_arquivo)
+
+def recupera_imagem(id):
+    for nome_arquivo in os.listdir(app.config['UPLOAD_PATH']):
+        if f'profile{id}' in nome_arquivo:
+            return nome_arquivo
+    return None 
+
+@app.route('/visualiza/<int:id>')
+def visualiza_imagem(id):
+    capa = recupera_imagem(id)
+    if capa:
+        return imagem(capa)
+    else:
+        flash('Imagem não encontrada', 'error')
+        return redirect(url_for('home'))

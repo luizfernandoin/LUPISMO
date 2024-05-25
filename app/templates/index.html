@@ -32,11 +32,13 @@
         <div class="thought-container" thought-id="{{ thought.id }}">
             <div class="card-thought">
                 <div class="thought-header">
-                    <div class="logo-container">
-                        <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Logo do Site">
+                    <div class="author-profile">
+                        <div class="logo-container">
+                            <img src="{{ url_for('visualiza_imagem', id=thought.author_id) }}" alt="Foto do Autor">
+                        </div>
                     </div>
-                    <div>
-                        <h5>Lupismo</h5>
+                    <div class="author-info">
+                        <p>{{ thought.author.username }}</p>
                         <span class="post-time">{{ thought.time_since_posted() }}</span>
                     </div>
                 </div>
@@ -46,12 +48,6 @@
                 </div>
         
                 <div class="thought-footer">
-                    <div class="author-info">
-                        <div class="logo-container">
-                            <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Foto do Autor">
-                        </div>
-                        <span>{{ thought.author.username }}</span>
-                    </div>
                     <div class="action-buttons">
                         <button class="like-button">
                             {% if thought.user_liked(user_id) %}
