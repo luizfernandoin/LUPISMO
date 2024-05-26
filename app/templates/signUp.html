@@ -7,39 +7,40 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/sign.css')}}">
 {% endblock style %}
 
-{% block content %}
+{% block main %}
 
-<div class="content-login">
-    <div class="card-login">
-        <form action="/signup" method="post" enctype="multipart/form-data">
-            <div id="content-profile">
-                <div id="uploadProfile" >
-                    <input type="file" id="capa" name="capa" accept=".jpg,.jpeg,.png" class="form-control">
-                    <img id="preview" src="{{ url_for('static', filename='src/profile.png') }}" alt="Preview"/>
+<section class="content-main">
+    <div class="content-login">
+        <div class="card-login">
+            <form action="/signup" method="post" enctype="multipart/form-data">
+                <div id="content-profile">
+                    <div id="uploadProfile" >
+                        <input type="file" id="capa" name="capa" accept=".jpg,.jpeg,.png" class="form-control">
+                        <img id="preview" src="{{ url_for('static', filename='src/profile.png') }}" alt="Preview"/>
+                    </div>
                 </div>
-            </div>
-            <div class="textfield">
-                <label for="username">Username</label>
-                <input type="text" name="username" placeholder="username">
-            </div>
-            <div class="textfield">
-                <label for="email">E-mail</label>
-                <input type="email" name="email" placeholder="email">
-            </div>
-            <div class="textfield">
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="password">
-            </div>
-            <button class="btn" id="btn-cadastro">Sign up</button>
-        </form>
-        
-        <p class="signin">Já tem conta? <a href="{{ url_for('signin') }}">Sign in</a> </p>
+                <div class="textfield">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" placeholder="username">
+                </div>
+                <div class="textfield">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="email" placeholder="email">
+                </div>
+                <div class="textfield">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="password">
+                </div>
+                <button class="btn" id="btn-cadastro">Sign up</button>
+            </form>
+            
+            <p class="signin">Já tem conta? <a href="{{ url_for('signin') }}">Sign in</a> </p>
+        </div>
     </div>
-</div>
-
+</section>
 
 {% block scripts %}
 <script src="{{url_for('static', filename='js/sign.js')}}"></script>
 {% endblock scripts %}
 
-{% endblock content %}
+{% endblock main %}

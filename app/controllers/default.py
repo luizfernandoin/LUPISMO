@@ -9,12 +9,28 @@ import os
 messages = [] 
 
 @app.route("/")
-def home():
+def feed():
     thoughts = Thought.query.order_by(Thought.created_at.desc()).all()
     user_id = session.get('user_id')
 
     return render_template("index.html", thoughts=thoughts, user_id=user_id)
 
+@app.route('/<username>')
+def user_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    thoughts = Thought.query.filter_by(author_id=user.id).all()
+    
+    return render_template('profile.html', user_id=user.id, thoughts=thoughts)
+
+@app.route('/users/<int:user_id>/thoughts', methods=['GET'])
+def get_user_thoughts(user_id):
+    user = User.query.get(user_id)
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+    
+    thoughts = Thought.query.filter_by(author_id=user_id).all()
+    
+    return render_template('profile.html', user_id=user.id, thoughts=thoughts)
 
 @app.route("/signin", methods=['GET', 'POST'])
 def signin():
@@ -34,7 +50,7 @@ def signin():
         # Cria uma sessão para o usuário autenticado
         session['user_id'] = user.id
         flash('Logged in successfully!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('feed'))
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -68,14 +84,15 @@ def signup():
         # Adiciona o usuário ao banco de dados
         db.session.add(new_user)
         db.session.commit()
+        session['user_id'] = new_user.id
         
         profile = request.files['capa']
         upload_path = app.config['UPLOAD_PATH']
         timestamp = time.time()
         profile.save(f'{upload_path}/profile{new_user.id}-{timestamp}.jpg')
-
+        
         flash('User registered successfully. You can now login.', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('feed'))
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -87,22 +104,13 @@ def get_thought():
     thoughts = Thought.query.all()
     return jsonify([thought.to_dict() for thought in thoughts]), 200
 
-@app.route('/users/<int:user_id>/thoughts', methods=['GET'])
-def get_user_thoughts(user_id):
-    user = User.query.get(user_id)
-    if user is None:
-        return jsonify({'error': 'User not found'}), 404
-    
-    thoughts = Thought.query.filter_by(author_id=user_id).all()
-    return jsonify([thought.to_dict() for thought in thoughts]), 200
-
 @socketio.on('addThought')
 def add_thought(data):
     text = data['thought']
 
     if not text:
         flash('Texto do pensamento não pode ser vazio.', 'error')
-        return redirect(url_for('home'))  # Ou qualquer rota que faça sentido
+        return redirect(url_for('feed'))  # Ou qualquer rota que faça sentido
 
     # Obtém o ID do usuário autenticado
     user_id = session.get('user_id')
@@ -110,7 +118,7 @@ def add_thought(data):
     # Verifica se o usuário está autenticado
     if not user_id:
         flash('Usuário não autenticado.', 'error')
-        return redirect(url_for('home'))  # Ou qualquer rota que faça sentido
+        return redirect(url_for('feed'))  # Ou qualquer rota que faça sentido
 
     # Cria um novo pensamento
     new_thought = Thought(
@@ -203,4 +211,17 @@ def visualiza_imagem(id):
         return imagem(capa)
     else:
         flash('Imagem não encontrada', 'error')
-        return redirect(url_for('home'))
+        return redirect(url_for('feed'))
+    
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query')
+    user_id = session.get('user_id')
+    
+    thought_results = []
+    user_results = []
+    if query:
+        thought_results = Thought.query.filter(Thought.text.ilike(f'%{query}%')).all()
+        user_results = User.query.filter(User.username.ilike(f'%{query}%')).all()
+        
+    return render_template('search.html', query=query, thoughts=thought_results, users=user_results, user_id=user_id)

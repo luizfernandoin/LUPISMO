@@ -27,12 +27,14 @@ window.onload = function() {
         thoughtContainer.innerHTML = `
             <div class="card-thought">
                 <div class="thought-header">
-                    <div class="logo-container">
-                        <img src="../static/src/logo.png" alt="Logo do Site">
+                    <div class="author-profile">
+                        <div class="logo-container">
+                            <img src="${msg.profile}" alt="Foto do Autor">
+                        </div>
                     </div>
-                    <div>
-                        <h5>Lupismo</h5>
-                        <span>${msg.time}</span>
+                    <div class="author-info">
+                        <p>${msg.author}</p>
+                        <span class="post-time">${msg.time}</span>
                     </div>
                 </div>
 
@@ -41,20 +43,10 @@ window.onload = function() {
                 </div>
 
                 <div class="thought-footer">
-                    <div class="author-info">
-                        <div class="logo-container">
-                            <img src="${msg.profile}" alt="Foto do Autor">
-                        </div>
-                        <span>${msg.author}</span>
-                    </div>
                     <div class="action-buttons">
                         <button class="like-button">
                             <i class="bi bi-heart"></i>
                             <span>${msg.likes}</span>
-                        </button>
-                        <button class="share-button">
-                            <i class="bi bi-share"></i>
-                            <span>${msg.shares}</span>
                         </button>
                     </div>
                 </div>
@@ -156,3 +148,19 @@ function toggleIcon(button, firstClass, lastClass) {
         icon.classList.add(firstClass);
     }
 }
+
+/*
+document.querySelectorAll('.share-button').forEach(button => {
+    button.addEventListener('click', function () {
+        const thoughtElement = button.closest('.thought-container');
+        html2canvas(thoughtElement).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL();
+            link.download = 'thought.png';
+            link.click();
+        }).catch(error => {
+            console.error('Error creating image: ', error);
+        });
+    });
+});
+*/

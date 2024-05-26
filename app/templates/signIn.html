@@ -7,26 +7,28 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/sign.css')}}">
 {% endblock style %}
 
-{% block content %}
+{% block main %}
 
-<div class="content-login">
-    <div class="card-login">
-        <img src="{{url_for('static', filename='src/logo.png')}}" alt="">
-        
-        <form action="/signin" method="post">
-            <div class="textfield">
-                <label for="email">E-mail</label>
-                <input type="email" name="email" placeholder="email">
-            </div>
-            <div class="textfield">
-                <label for="password">Senha</label>
-                <input type="password" name="password" placeholder="password">
-            </div>
-            <button class="btn" id="btn-login">Sign in</button>
-        </form>
-        
-        <p class="signin">Não tem conta? <a href="{{ url_for('signup') }}">Sign up</a> </p>
+<section class="content-main">
+    <div class="content-login">
+        <div class="card-login">
+            <img src="{{url_for('static', filename='src/logo.png')}}" alt="">
+            
+            <form action="/signin" method="post">
+                <div class="textfield">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="email" placeholder="email">
+                </div>
+                <div class="textfield">
+                    <label for="password">Senha</label>
+                    <input type="password" name="password" placeholder="password">
+                </div>
+                <button class="btn" id="btn-login">Sign in</button>
+            </form>
+            
+            <p class="signin">Não tem conta? <a href="{{ url_for('signup') }}">Sign up</a> </p>
+        </div>
     </div>
-</div>
+</section>
 
-{% endblock content %}
+{% endblock main %}

@@ -1,0 +1,26 @@
+.content-lupme a {
+    text-decoration: none;
+}
+
+.user-container {
+    display: flex;
+    column-gap: 1rem;
+    width: 100%;
+    align-items: center;
+}
+
+.not-search {
+    width: 100%;
+    padding: 10rem;
+}
+
+.not-search h5 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.not-search p {
+    color: #444;
+    font-size: 1rem;
+}

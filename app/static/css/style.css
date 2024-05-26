@@ -5,7 +5,15 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.container {
+h5 {
+    font-size: 1.25rem;
+    line-height: 1.55em;
+    color: #FBFBFB;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 300;
+}
+
+.content-main {
     display: flex;
     flex-flow: column;
     width: 100%;
@@ -15,13 +23,3 @@
     justify-content: center;
     align-items: center;
 }
-
-h5 {
-    font-size: 1.25rem;
-    line-height: 1.55em;
-    color: #FBFBFB;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 300;
-}
-
-/* Estilo para o botão de compartilhar */
