@@ -9,6 +9,7 @@ body {
 
 header {
     min-width: 15%;
+    padding: 0.3rem;
 }
 
 main {
@@ -284,4 +285,42 @@ i {
 .search-icon i {
     font-size: 20px;
     color: #444;
+}
+
+
+
+
+
+.navbar {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    max-width: 100%;
+}
+
+.navbar-logo img {
+    height: 3rem;
+}
+
+.navbar-links {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-link {
+    padding: .8rem 1rem;
+    text-decoration: none;
+    border-radius: 2rem;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-link i {
+    color: #fff;
+}
+
+.nav-link:hover {
+    background-color: #444;
 }

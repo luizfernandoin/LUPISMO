@@ -10,10 +10,13 @@ messages = []
 
 @app.route("/")
 def feed():
-    thoughts = Thought.query.order_by(Thought.created_at.desc()).all()
     user_id = session.get('user_id')
+    
+    if user_id:
+        thoughts = Thought.query.order_by(Thought.created_at.desc()).all()
+        return render_template("index.html", thoughts=thoughts, user_id=user_id)
 
-    return render_template("index.html", thoughts=thoughts, user_id=user_id)
+    return redirect(url_for('signin'))
 
 @app.route('/<username>')
 def user_profile(username):
