@@ -37,6 +37,13 @@ class User(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+    
+    def joined_in(self):
+        return self.created_at.strftime("%b %Y")
+    
+    def len_posted(self):
+        return Thought.query.filter_by(author_id=self.id).count()
+    
 
 class Thought(db.Model):
     __tablename__ = "thoughts"

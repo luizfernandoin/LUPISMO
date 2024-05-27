@@ -50,7 +50,7 @@
                 <div class="thought-footer">
                     <div class="action-buttons">
                         <button class="like-button">
-                            {% if thought.user_liked(user_id) %}
+                            {% if thought.user_liked(user.id) %}
                                 <i class="bi bi-heart-fill"></i>
                             {% else %}
                                 <i class="bi bi-heart"></i>
@@ -76,4 +76,6 @@
 
 {% block scripts %}
 {{ super() }}
+<script type="module" src="{{url_for('static', filename='js/feed.js')}}"></script>
+<script src="{{url_for('static', filename='js/input-thought.js')}}"></script>
 {% endblock scripts %}

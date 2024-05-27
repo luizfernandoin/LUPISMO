@@ -11,10 +11,11 @@ messages = []
 @app.route("/")
 def feed():
     user_id = session.get('user_id')
+    user = User.query.get(user_id)
     
     if user_id:
         thoughts = Thought.query.order_by(Thought.created_at.desc()).all()
-        return render_template("feed.html", thoughts=thoughts, user_id=user_id)
+        return render_template("feed.html", thoughts=thoughts, user=user)
 
     return redirect(url_for('signin'))
 
@@ -23,7 +24,7 @@ def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     thoughts = Thought.query.filter_by(author_id=user.id).all()
     
-    return render_template('profile.html', user_id=user.id, thoughts=thoughts)
+    return render_template('profile.html', user=user, thoughts=thoughts)
 
 @app.route('/users/<int:user_id>/thoughts', methods=['GET'])
 def get_user_thoughts(user_id):
@@ -33,7 +34,7 @@ def get_user_thoughts(user_id):
     
     thoughts = Thought.query.filter_by(author_id=user_id).all()
     
-    return render_template('profile.html', user_id=user.id, thoughts=thoughts)
+    return render_template('profile.html', user=user, thoughts=thoughts)
 
 @app.route("/signin", methods=['GET', 'POST'])
 def signin():
@@ -220,6 +221,7 @@ def visualiza_imagem(id):
 def search():
     query = request.args.get('query')
     user_id = session.get('user_id')
+    user = User.query.get(user_id)
     
     thought_results = []
     user_results = []
@@ -227,4 +229,4 @@ def search():
         thought_results = Thought.query.filter(Thought.text.ilike(f'%{query}%')).all()
         user_results = User.query.filter(User.username.ilike(f'%{query}%')).all()
         
-    return render_template('search.html', query=query, thoughts=thought_results, users=user_results, user_id=user_id)
+    return render_template('search.html', query=query, thoughts=thought_results, users=user_results, user=user)

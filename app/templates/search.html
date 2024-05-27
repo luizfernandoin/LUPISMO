@@ -27,6 +27,7 @@
     {% endif %}
 
     {% if thoughts %}
+    <div class="thought-main">
         {% for thought in thoughts %}
         <div class="thought-container" thought-id="{{ thought.id }}">
             <div class="card-thought">
@@ -51,7 +52,7 @@
                 <div class="thought-footer">
                     <div class="action-buttons">
                         <button class="like-button">
-                            {% if thought.user_liked(user_id) %}
+                            {% if thought.user_liked(user.id) %}
                                 <i class="bi bi-heart-fill"></i>
                             {% else %}
                                 <i class="bi bi-heart"></i>
@@ -69,6 +70,7 @@
             </div>
         </div>
         {% endfor %}
+    </div>
     {% endif %}
 
     {% if not users and not thoughts %}
@@ -80,6 +82,7 @@
 </div>
 
 {% block scripts %}
+{{ super() }}
 {% endblock scripts %}
 
 {% endblock content %}

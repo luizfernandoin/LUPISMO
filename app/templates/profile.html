@@ -4,11 +4,32 @@
 
 {% block style %}
 {{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css')}}">
 {% endblock style %}
 
 
 {% block content %}
 <div class="content-lupme">
+    <div id="content-profile">
+        <div id="image-profile">
+            <img src="{{ url_for('visualiza_imagem', id=user.id) }}" alt="Foto do Perfil">
+        </div>
+
+        <div id="stats-profile">
+            <div id="username">
+                <p>{{ user.username }}</p>
+            </div>
+            <div id="joined">
+                <i class="bi bi-calendar3"></i>
+                <p>entrou em {{ user.joined_in() }}</p>
+            </div>
+
+            <div id="posts">
+                <p>{{ user.len_posted() }} thoughts</p>
+            </div>
+        </div>
+    </div>
+
     <div class="thought-main">
         {% for thought in thoughts %}
         <div class="thought-container" thought-id="{{ thought.id }}">
@@ -32,7 +53,7 @@
                 <div class="thought-footer">
                     <div class="action-buttons">
                         <button class="like-button">
-                            {% if thought.user_liked(user_id) %}
+                            {% if thought.user_liked(user.id) %}
                                 <i class="bi bi-heart-fill"></i>
                             {% else %}
                                 <i class="bi bi-heart"></i>
@@ -54,6 +75,7 @@
 </div>
 
 {% block scripts %}
+{{ super() }}
 {% endblock scripts %}
 
 {% endblock content %}
