@@ -6,23 +6,41 @@
 {{ super() }}
 {% endblock style %}
 
-
 {% block content %}
 <div class="content-lupme">
+    <div class="thought-input">
+        <form class="form-thought" id="thoughtForm">
+            <div class="author-info">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Foto do Autor">
+                </div>
+            </div>
+            <div class="main-form">
+                <div id="thought" class="editable" contenteditable="true" required></div>
+                <div class="inputs-post">
+                    <div class="char-counter"></div>
+                    <input type="submit" id="postButton" value="Post">
+                </div>
+            </div>
+        </form>
+    </div>
+    
     <div class="thought-main">
         {% for thought in thoughts %}
         <div class="thought-container" thought-id="{{ thought.id }}">
             <div class="card-thought">
                 <div class="thought-header">
-                    <div class="author-profile">
-                        <div class="logo-container">
-                            <img src="{{ url_for('visualiza_imagem', id=thought.author_id) }}" alt="Foto do Autor">
+                    <a class="thought-header" href="{{ url_for('get_user_thoughts', user_id=thought.author.id) }}">
+                        <div class="author-profile">
+                            <div class="logo-container">
+                                <img src="{{ url_for('visualiza_imagem', id=thought.author_id) }}" alt="Foto do Autor">
+                            </div>
                         </div>
-                    </div>
-                    <div class="author-info">
-                        <p>{{ thought.author.username }}</p>
-                        <span class="post-time">{{ thought.time_since_posted() }}</span>
-                    </div>
+                        <div class="author-info">
+                            <p>{{ thought.author.username }}</p>
+                            <span class="post-time">{{ thought.time_since_posted() }}</span>
+                        </div>
+                    </a>
                 </div>
         
                 <div class="thought-content">
@@ -52,8 +70,10 @@
         {% endfor %}
     </div>
 </div>
+{% endblock content %}
+
+
 
 {% block scripts %}
+{{ super() }}
 {% endblock scripts %}
-
-{% endblock content %}

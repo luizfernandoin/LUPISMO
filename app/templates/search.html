@@ -1,56 +1,37 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
 
 {% block title %} LUPME {% endblock title %}
 
 {% block style %}
 {{ super() }}
-<link rel="stylesheet" href="{{url_for('static', filename='css/thought.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/search.css')}}">
 {% endblock style %}
 
-{% block header %}
-<nav class="navbar">
-    <div class="navbar-logo">
-        <a href="{{ url_for('feed') }}">
-            <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Logo">
-        </a>
-    </div>
-    <div class="navbar-links">
-        <a href="{{ url_for('feed') }}" class="nav-link"> 
-            <i class="bi bi-house-door-fill"></i> Home
-        </a>
-        <a href="{{ url_for('get_user_thoughts', user_id=user_id) }}" class="nav-link">
-            <i class="bi bi-person-fill"></i> Profile
-        </a>
-    </div>
-</nav>
-{% endblock header %}
-
-{% block main %}
-<section class="content-main">
-    <div class="content-lupme">
-        {% if users %}
-            {% for user in users %}
-            <a class="user-container" href="{{ url_for('get_user_thoughts', user_id=user.id) }}">
-                <div class="user-container" thought-id="{{ user.id }}">
-                    <div class="author-profile">
-                        <div class="logo-container">
-                            <img src="{{ url_for('visualiza_imagem', id=user.id) }}" alt="Foto do Autor">
-                        </div>
-                    </div>
-                    <div class="author-info">
-                        <p>{{ user.username }}</p>
+{% block content %}
+<div class="content-lupme">
+    {% if users %}
+        {% for user in users %}
+        <a class="user-container" href="{{ url_for('get_user_thoughts', user_id=user.id) }}">
+            <div class="user-container" thought-id="{{ user.id }}">
+                <div class="author-profile">
+                    <div class="logo-container">
+                        <img src="{{ url_for('visualiza_imagem', id=user.id) }}" alt="Foto do Autor">
                     </div>
                 </div>
-            </a>
-            {% endfor %}
-        {% endif %}
+                <div class="author-info">
+                    <p>{{ user.username }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    {% endif %}
 
-        {% if thoughts %}
-            {% for thought in thoughts %}
-            <div class="thought-container" thought-id="{{ thought.id }}">
-                <div class="card-thought">
-                    <div class="thought-header">
+    {% if thoughts %}
+        {% for thought in thoughts %}
+        <div class="thought-container" thought-id="{{ thought.id }}">
+            <div class="card-thought">
+                <div class="thought-header">
+                    <a class="thought-header" href="{{ url_for('get_user_thoughts', user_id=thought.author.id) }}">
                         <div class="author-profile">
                             <div class="logo-container">
                                 <img src="{{ url_for('visualiza_imagem', id=thought.author_id) }}" alt="Foto do Autor">
@@ -60,56 +41,45 @@
                             <p>{{ thought.author.username }}</p>
                             <span class="post-time">{{ thought.time_since_posted() }}</span>
                         </div>
-                    </div>
-            
-                    <div class="thought-content">
-                        <span>{{ thought.text }}</span>
-                    </div>
-            
-                    <div class="thought-footer">
-                        <div class="action-buttons">
-                            <button class="like-button">
-                                {% if thought.user_liked(user_id) %}
-                                    <i class="bi bi-heart-fill"></i>
-                                {% else %}
-                                    <i class="bi bi-heart"></i>
-                                {% endif %}
-                                <span>{{ thought.likes_count }}</span>
-                            </button>
-                            <!--
-                            <button class="share-button">
-                                <i class="bi bi-share"></i>
-                                <span>{{ thought.shares_count }}</span>
-                            </button>
-                            -->
-                        </div>
-                    </div>    
+                    </a>
                 </div>
+        
+                <div class="thought-content">
+                    <span>{{ thought.text }}</span>
+                </div>
+        
+                <div class="thought-footer">
+                    <div class="action-buttons">
+                        <button class="like-button">
+                            {% if thought.user_liked(user_id) %}
+                                <i class="bi bi-heart-fill"></i>
+                            {% else %}
+                                <i class="bi bi-heart"></i>
+                            {% endif %}
+                            <span>{{ thought.likes_count }}</span>
+                        </button>
+                        <!--
+                        <button class="share-button">
+                            <i class="bi bi-share"></i>
+                            <span>{{ thought.shares_count }}</span>
+                        </button>
+                        -->
+                    </div>
+                </div>    
             </div>
-            {% endfor %}
-        {% endif %}
-
-        {% if not users and not thoughts %}
-        <div class="not-search">
-            <h5>Nenhum resultado para "{{ query }}".</h5>
-            <p>Tente pesquisar outra coisa.</p>
         </div>
-        {% endif %}
-    </div>
-</section>
+        {% endfor %}
+    {% endif %}
 
-<section class="content-stats">
-    <div class="search-container">
-        <form action="{{ url_for('search') }}" method="GET">
-            <label class="search-icon" for="search-input">
-                <i class="fa fa-search"></i>
-            </label>
-            <input type="text" class="search-input" id="search-input" name="query" placeholder="Search"/>
-        </form>
+    {% if not users and not thoughts %}
+    <div class="not-search">
+        <h5>Nenhum resultado para "{{ query }}".</h5>
+        <p>Tente pesquisar outra coisa.</p>
     </div>
-</section>
+    {% endif %}
+</div>
 
 {% block scripts %}
 {% endblock scripts %}
 
-{% endblock main %}
+{% endblock content %}

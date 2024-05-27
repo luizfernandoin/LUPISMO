@@ -8,14 +8,14 @@ body {
 }
 
 header {
-    min-width: 15%;
+    min-width: 20%;
     padding: 0.3rem;
 }
 
 main {
     display: flex;
     column-gap: 2rem;
-    width: calc(85% - 2rem);
+    min-width: calc(85% - 2rem);
 }
 
 .content-main {

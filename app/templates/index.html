@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% block title %} LUPME {% endblock title %}
-
 {% block style %}
 {{ super() }}
 <link rel="stylesheet" href="{{url_for('static', filename='css/thought.css')}}">
@@ -23,77 +21,12 @@
         </a>
     </div>
 </nav>
-
-<div>
-    
-</div>
 {% endblock header %}
 
 {% block main %}
 <section class="content-main">
-    <div class="content-lupme">
-        <div class="thought-input">
-            <form class="form-thought" id="thoughtForm">
-                <div class="author-info">
-                    <div class="logo-container">
-                        <img src="{{ url_for('static', filename='src/logo.png') }}" alt="Foto do Autor">
-                    </div>
-                </div>
-                <div class="main-form">
-                    <div id="thought" class="editable" contenteditable="true" required></div>
-                    <div class="inputs-post">
-                        <div class="char-counter"></div>
-                        <input type="submit" id="postButton" value="Post">
-                    </div>
-                </div>
-            </form>
-        </div>
-        
-        <div class="thought-main">
-            {% for thought in thoughts %}
-            <div class="thought-container" thought-id="{{ thought.id }}">
-                <div class="card-thought">
-                    <div class="thought-header">
-                        <a class="thought-header" href="{{ url_for('get_user_thoughts', user_id=thought.author.id) }}">
-                            <div class="author-profile">
-                                <div class="logo-container">
-                                    <img src="{{ url_for('visualiza_imagem', id=thought.author_id) }}" alt="Foto do Autor">
-                                </div>
-                            </div>
-                            <div class="author-info">
-                                <p>{{ thought.author.username }}</p>
-                                <span class="post-time">{{ thought.time_since_posted() }}</span>
-                            </div>
-                        </a>
-                    </div>
-            
-                    <div class="thought-content">
-                        <span>{{ thought.text }}</span>
-                    </div>
-            
-                    <div class="thought-footer">
-                        <div class="action-buttons">
-                            <button class="like-button">
-                                {% if thought.user_liked(user_id) %}
-                                    <i class="bi bi-heart-fill"></i>
-                                {% else %}
-                                    <i class="bi bi-heart"></i>
-                                {% endif %}
-                                <span>{{ thought.likes_count }}</span>
-                            </button>
-                            <!--
-                            <button class="share-button">
-                                <i class="bi bi-share"></i>
-                                <span>{{ thought.shares_count }}</span>
-                            </button>
-                            -->
-                        </div>
-                    </div>    
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+    {% block content %}
+    {% endblock content %}
 </section>
 
 <section class="content-stats">
