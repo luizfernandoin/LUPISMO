@@ -22,13 +22,22 @@ LUPISMO é uma plataforma de rede social focada em compartilhamento de pensament
 
 ## Funcionalidades
 
+- 🔐 **Sign In**: Faça login na plataforma para acessar recursos exclusivos e interagir com outros membros da comunidade.
+![Sign In](./app/static/src/signin.png)
+
+- 🔐 **Sign Up**: Registre-se e crie uma conta para se tornar parte da comunidade, compartilhar seus interesses e contribuir com discussões.
+![Sign Up](./app/static/src/signup.png)
+
 - 📝 **Postagem de Pensamentos**: Os usuários podem postar seus pensamentos e ideias.
+![Feed](./app/static/src/feed.png)
 
 - 👍 **Interatividade**: Os usuários podem curtir pensamentos de outros usuários.
 
 - 👤 **Perfil de Usuário**: Cada usuário possui um perfil onde podem ver suas postagens e informações.
+![Profile](./app/static/src/profile(1).png)
 
 - 🔍 **Busca**: Busca por pensamentos e outros usuários.
+![Search](./app/static/src/search.png)
 
 - ⏰ **Exibição de Tempo desde a Postagem**: Mostra quanto tempo atrás um pensamento foi postado.
 
