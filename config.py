@@ -5,7 +5,7 @@ DEBUG = True
 
 SECRET_KEY = ENV("SECRET_KEY")
 
-SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
+SQLALCHEMY_DATABASE_URI = "postgresql://lupismo_user:slhnTESKYbHWxPFFcFDq9f6MZXfOBvmF@dpg-cpasqvlds78s73d7jr7g-a.oregon-postgres.render.com/lupismo_41i3"
 
 #postgres://lupismo_user:slhnTESKYbHWxPFFcFDq9f6MZXfOBvmF@dpg-cpasqvlds78s73d7jr7g-a.oregon-postgres.render.com/lupismo_41i3
 
