@@ -137,6 +137,18 @@
     }
 }
 
+@media (max-width: 840px) {
+    .content-login {
+        width: 60%;
+    }
+}
+
+@media (max-width: 690px) {
+    .content-login {
+        width: 70%;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     .main-login {
         flex-direction: column;
@@ -165,3 +177,20 @@
     }
 }
 
+@media (max-width: 540px) {
+    .content-login {
+        width: 80%;
+    }
+}
+
+@media (max-width: 440px) {
+    .content-login {
+        width: 90%;
+    }
+}
+
+@media (max-width: 340px) {
+    .content-login {
+        width: 100%;
+    }
+}
