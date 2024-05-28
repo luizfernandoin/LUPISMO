@@ -10,7 +10,6 @@ socket.on('connect', () => {
 
 
 socket.on('updateLikes', function(data_like) {
-    console.log(data_like.likes)
     const thoughtContainer = document.querySelector(`.thought-container[thought-id="${data_like.id}"]`);
 
     if (thoughtContainer) {
@@ -25,6 +24,52 @@ socket.on('updateLikes', function(data_like) {
         const likeSpan = thoughtContainer.querySelector('.like-button span');
         likeSpan.textContent = data_like.likes;
     }
+});
+
+document.querySelector("#link-search").addEventListener("click", () => {
+    const thoughtInput = document.querySelector(".thought-input");
+    const contentProfile = document.getElementById("content-profile");
+
+    if (thoughtInput) {
+        thoughtInput.classList.add('none');
+    } else if (contentProfile) {
+        contentProfile.classList.add('none');
+    }
+
+    const contentLupme = document.querySelector(".content-lupme");
+
+    let searchContainer = contentLupme.querySelector(".search-container");
+
+    if (searchContainer) {
+        return
+    }
+
+    const searchUrl = document.querySelector("#link-search").getAttribute("data-search-url");
+
+    searchContainer = document.createElement("div");
+    searchContainer.className = "search-container";
+    const form = document.createElement("form");
+    form.setAttribute("action", searchUrl);
+    form.setAttribute("method", "GET");
+    const label = document.createElement("label");
+    label.className = "search-icon";
+    label.setAttribute("for", "search-input");
+    const icon = document.createElement("i");
+    icon.className = "fa fa-search";
+    label.appendChild(icon);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "search-input";
+    input.id = "search-input";
+    input.name = "query";
+    input.setAttribute("placeholder", "Search");
+    
+    
+    form.appendChild(label);
+    form.appendChild(input);
+    searchContainer.appendChild(form);
+    
+    contentLupme.insertBefore(searchContainer, contentLupme.firstChild);
 });
 
 document.querySelector(".thought-main").addEventListener("click", function(event) {
