@@ -5,16 +5,10 @@ DEBUG = True
 
 SECRET_KEY = ENV("SECRET_KEY")
 
-SQLALCHEMY_DATABASE_URI = \
-    '{SGBD}://{usuario}:{senha}@{servidor}/{database}'.format(
-        SGBD = 'postgresql',
-        usuario = ENV("USUARIO"),
-        senha = ENV("SENHA"),
-        servidor = 'localhost',
-        database = ENV("DATABASE")
-    )
+SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
 
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+#postgres://lupismo_user:slhnTESKYbHWxPFFcFDq9f6MZXfOBvmF@dpg-cpasqvlds78s73d7jr7g-a.oregon-postgres.render.com/lupismo_41i3
+
 
 
 # pegando o nome do caminho absoluto do diretório e concatenando com o diretório uplouds
