@@ -1,3 +1,3 @@
-const socket = io('http://127.0.0.1:5000');
+const socket = io('https://lupismo.onrender.com/');
 
 export { socket };
